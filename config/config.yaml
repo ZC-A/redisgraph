@@ -1,0 +1,4 @@
+redis:
+  host: 43.154.150.30
+  port: 6379
+  password: wikiredis
