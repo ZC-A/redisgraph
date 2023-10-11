@@ -2,7 +2,7 @@ from loguru import logger
 from config import conf
 from graph.client import client
 from redisgraph import Graph
-
+import manager
 
 if __name__ == '__main__':
     logger.info('init redis graph....')
@@ -14,6 +14,4 @@ if __name__ == '__main__':
     if not client:
         exit(1)
     redis_graph = Graph('SocialGraph', client)
-    with open('queries/1.cypher', 'r') as f:
-        query = f.read()
-    results = redis_graph.query(query)
+    manager.Person_isLocatedIn_City(redis_graph)

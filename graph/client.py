@@ -9,8 +9,8 @@ def client(conf):
     password = conf.get('password')
     client = redis.Redis(host=host, port=port, password=password)
     if client.ping():
-        logger.info('连接成功')
+        logger.info('connection success')
         return client
     else:
-        logger.error('连接失败')
+        logger.error('connection failed')
         return None

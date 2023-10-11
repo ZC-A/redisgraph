@@ -2,3 +2,4 @@ redis==4.3.6
 redisgraph==2.4.4
 loguru==0.7.2
 redisgraph-bulk-loader==0.10.2
+pandas==2.1.1
