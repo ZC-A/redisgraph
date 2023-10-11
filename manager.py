@@ -5,9 +5,7 @@ import pandas as pd
 def random_pick(filepath):
     df = pd.read_csv(filepath, sep='|')
     pick_df = df.sample(20)
-    pick = []
-    for index, row in pick_df.iterrows():
-        pick.append(df.iloc([], row[1]])
+    return pick_df
 
 
 def Person_isLocatedIn_City(graph):
@@ -17,9 +15,10 @@ def Person_isLocatedIn_City(graph):
             queries = f.read()  # 读取cypher 语句并用后续数据填充
             # 从对应的csv读取数据并随机取样来测试 循环测试
             picks = random_pick('parameters/Person_isLocatedIn_City.csv')
-            for pick in picks:
-                query_key = str(pick[0])
-                res = str(pick[1])
+
+            for i in range(len(picks)):
+                query_key = str(picks.iloc[i, 0])
+                res = str(picks.iloc[i, 1])
                 cur_queries = queries.format(query_key)
                 results = graph.query(cur_queries)
                 logger.info(results.result_set)
