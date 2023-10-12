@@ -28,3 +28,27 @@ def Person_isLocatedIn_City(graph):
                 logger.info('equal query: Persion_id {} City_id {}'.format(query_key, res))
     except Exception as e:
         logger.error('query failed ' + str(e))
+
+def Person_knows_Person(graph):
+    # 随机读取一些数据来测试 对应 queries/**.cypher文件
+    try:
+        with open('queries/Person_knows_Person.cypher', 'r') as f:
+            queries = f.read()  # 读取cypher 语句并用后续数据填充
+            picks = random_pick('parameters/Person_knows_Person.csv')
+            ans = []
+
+            for i in range(len(picks)):
+                query_key = str(picks.iloc[i, 0])
+                res = str(picks.iloc[i, 1])
+                cur_queries = queries.format(query_key)
+                results = graph.query(cur_queries)
+                #logger.info(results.result_set)
+                ans = [sublist[0] for sublist in results.result_set]    #由于一个节点的knows关系有多个，因此查询到的friendid会有多个
+                # print(ans)
+                # print(res)
+                if res not in ans:  #friendid有多个，此处需确定res在查询到的friendid中
+                    logger.error('unequal query: Person_id {} Friend_id {}'.format(query_key, res))
+                logger.info('query success: Friend_id {} Friend_Id_Index {}'.format(res, ans.index(res)))
+
+    except Exception as e:
+        logger.error('query failed ' + str(e))

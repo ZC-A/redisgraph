@@ -14,4 +14,5 @@ if __name__ == '__main__':
     if not client:
         exit(1)
     redis_graph = Graph('SocialGraph', client)
-    manager.Person_isLocatedIn_City(redis_graph)
+    #manager.Person_isLocatedIn_City(redis_graph)
+    manager.Person_knows_Person(redis_graph)
