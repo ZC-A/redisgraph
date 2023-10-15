@@ -16,4 +16,5 @@ if __name__ == '__main__':
     redis_graph = Graph('SocialGraph', client)
     #manager.Person_isLocatedIn_City(redis_graph)
     #manager.Person_knows_Person(redis_graph)
-    manager.Comment_hasCreator_Person(redis_graph)
+    #manager.Comment_hasCreator_Person(redis_graph)
+    manager.Comment_isLocatedIn_Country(redis_graph)
