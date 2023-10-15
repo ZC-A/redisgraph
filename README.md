@@ -50,8 +50,10 @@ install the redisgraph-bulk-loader
 pip install redisgraph-bulk-loader==0.10.2
 ```
 please note that `redisgraph-bulk-loader==0.10.2` requires `redis==4.3.6`
+
 setting enviroment variable IMPORT_DATA_DIR_PROJECTED_FK, which should be the data directory mentioned above
-after install the module using the command from `command` file to insert the data into redis, remember to change password if you don't have one, which is configured in conf file
+
+after install the module using the command from `command` file to insert the data into redis, remember to change password if you don't have one or changed, which is configured in conf file, we apply bulking in the same machine that we deploy redisgraph, if you trying to connect to different redisgraph client that not in your machine, please add other parameters, you can check the instructions in redis-bulk-loader github pages
 
 
 ## run the queries to check the system
@@ -65,3 +67,5 @@ then run to check the system
 ```
 python main.py
 ```
+
+## about the queries
