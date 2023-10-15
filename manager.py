@@ -42,7 +42,7 @@ def Person_knows_Person(graph):
                 res = str(picks.iloc[i, 1])
                 cur_queries = queries.format(query_key)
                 results = graph.query(cur_queries)
-                #logger.info(results.result_set)
+                logger.info(results.result_set)
                 ans = [sublist[0] for sublist in results.result_set]    #由于一个节点的knows关系有多个，因此查询到的friendid会有多个
                 # print(ans)
                 # print(res)
