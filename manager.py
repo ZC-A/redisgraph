@@ -29,6 +29,7 @@ def Person_isLocatedIn_City(graph):
     except Exception as e:
         logger.error('query failed ' + str(e))
 
+
 def Person_knows_Person(graph):
     # 随机读取一些数据来测试 对应 queries/**.cypher文件
     try:
@@ -53,6 +54,7 @@ def Person_knows_Person(graph):
     except Exception as e:
         logger.error('query failed ' + str(e))
 
+
 def Comment_hasCreator_Person(graph):
     # 随机读取一些数据来测试 对应 queries/**.cypher文件
     try:
@@ -72,6 +74,7 @@ def Comment_hasCreator_Person(graph):
                 logger.info('equal query: Comment_id {} Person_id {}'.format(query_key, res))
     except Exception as e:
         logger.error('query failed ' + str(e))
+
 
 def Comment_isLocatedIn_Country(graph):
     # 随机读取一些数据来测试 对应 queries/**.cypher文件
