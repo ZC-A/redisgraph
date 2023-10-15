@@ -69,3 +69,4 @@ python main.py
 ```
 
 ## about the queries
+LDBC benchmark gives a lot querys to test your database, you can get it from `https://github.com/ldbc/ldbc_snb_interactive_v1_impls`. redisgraph database runs cypher query, so
