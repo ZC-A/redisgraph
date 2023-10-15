@@ -52,3 +52,25 @@ def Person_knows_Person(graph):
 
     except Exception as e:
         logger.error('query failed ' + str(e))
+
+def Comment_hasCreator_Person(graph):
+    # 随机读取一些数据来测试 对应 queries/**.cypher文件
+    try:
+        with open('queries/Comment_hasCreator_Person.cypher', 'r') as f:
+            queries = f.read()  # 读取cypher 语句并用后续数据填充
+            picks = random_pick('parameters/Comment_hasCreator_Person.csv')
+
+            for i in range(len(picks)):
+                query_key = str(picks.iloc[i, 0])
+                res = str(picks.iloc[i, 1])
+                cur_queries = queries.format(query_key)
+                results = graph.query(cur_queries)
+                logger.info(results.result_set)
+                ans = results.result_set[0][0]  # 根据对应的语句获得最后的下标结果 在cypher中Personid被作为第1个返回值 则它的对应下标为0
+                if ans != res:
+                    logger.error('unequal query: Comment_id {} Person_id {}'.format(query_key, res))
+                logger.info('equal query: Comment_id {} Person_id {}'.format(query_key, res))
+    except Exception as e:
+        logger.error('query failed ' + str(e))
+
+def
