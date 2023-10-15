@@ -73,4 +73,4 @@ LDBC benchmark gives a lot of queries to test your database, you can get it from
 
 data generator gives nodes and relations between nodes. first randomly make 20 samples in relation csv files, second format the cypher query with samples attributes such as id, etc. then run the cypher in redisgraph and get the cypher results, compare it with the csv samples to check whether it's correct.
 
-in manager.py define different functions are defined specifically for different cyphers, ids in samples were passed into function as param, eventually as cypher's param. unfortunately data generator generate data randomly, which means alot properties are missing, cause alot cyphers dysfunctional.
+in manager.py, different functions are defined specifically for different cyphers, ids in samples were passed into function as param, eventually as cypher's param. unfortunately data generator generate data randomly, which means alot properties are missing, cause alot cyphers dysfunctional. to solve this problem we might update cyphers or data
