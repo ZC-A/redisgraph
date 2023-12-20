@@ -74,3 +74,59 @@ LDBC benchmark gives a lot of queries to test your database, you can get it from
 data generator gives nodes and relations between nodes. first randomly make 20 samples in relation csv files, second format the cypher query with samples attributes such as id, etc. then run the cypher in redisgraph and get the cypher results, compare it with the csv samples to check whether it's correct.
 
 in manager.py, different functions are defined specifically for different cyphers, ids in samples were passed into function as param, eventually as cypher's param. unfortunately data generator generate data randomly, which means alot properties are missing, cause alot cyphers dysfunctional. to solve this problem we might update cyphers or data
+
+## WorkLoad
+LDBC benchmark  consists of two distinct workloads on a common dataset:
+
+1. `The Business Intelligence workload` is focusing on aggregation- and join-heavy complex queries touching a large portion of the graph with microbatches of insert/delete operations. 
+2. `The Interactive workload` captures transactional graph processing scenario with complex read queries that access the neighbourhood of a given node in the graph and update operations that continuously insert new data in the graph
+
+in phase1, we implemented `The Interactive workload` 
+
+##Result
+
+1. 100K write commands
+   
+    ```
+    ./redisgraph-benchmark-go -n 100000 -graph-key graph -query "CREATE (u:User)"
+    ```
+    ![Alt text](image.png)
+
+2. running mixed read and writes benchmark in a single graph
+    ```
+    ./redisgraph-benchmark-go -n 100000 \
+    -graph-key graph \
+    -query "CREATE (u:User)" \
+    -query-ratio 0.5 \
+    -query-ro "MATCH (n) return COUNT(n)" \
+    -query-ratio 0.5\
+    -a wikiredis \
+    ```
+    ![Alt text](image-1.png)
+3. running mixed read and writes benchmark in two graphs
+
+    ```
+    ./redisgraph-benchmark-go -n 100000 \
+    -graph-key graph \
+    -query "CREATE (u:User)" \
+    -a wikiredis \
+    -query-ratio 0.5 \
+    -graph-key graph2 \
+    -query "CREATE (u:User)" \
+    -query-ratio 0.5
+    ```
+    ![Alt text](image-2.png)
+4. running mixed read and writes benchmark from a remote server
+
+    ```
+    ./redisgraph-benchmark-go -n 100000 \
+    -graph-key graph \
+    -query "CREATE (u:User)" \
+    -query-ratio 0.5 \
+    -query-ro "MATCH (n) return COUNT(n)" \
+    -query-ratio 0.5\
+    -a wikiredis \
+    -p 6379 \
+    -h 43.154.150.30
+    ```
+    ![Alt text](image-3.png)
