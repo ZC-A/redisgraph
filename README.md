@@ -78,21 +78,33 @@ in manager.py, different functions are defined specifically for different cypher
 ## WorkLoad
 LDBC benchmark  consists of two distinct workloads on a common dataset:
 
-1. `The Business Intelligence workload` is focusing on aggregation- and join-heavy complex queries touching a large portion of the graph with microbatches of insert/delete operations. 
+1. `The Business Intelligence workload` is focusing on aggregation- and join-heavy complex queries touching a large portion of the graph with microbatches of insert/delete operations.
 2. `The Interactive workload` captures transactional graph processing scenario with complex read queries that access the neighbourhood of a given node in the graph and update operations that continuously insert new data in the graph
 
-in phase1, we implemented `The Interactive workload` 
+in phase1, we implemented `The Interactive workload`
 
-##Result
+
+## Performance evaluation
+In this part, we modify some parts of a open-source tool called redis-benchmark-go then use it as our evaluation tools, since it only supports one graph key read/write concurrently, we extend it to multiple graph key with a Python script file
+The installation of this tool could be found via `https://github.com/RedisGraph/redisgraph-benchmark-go`
+Besides, our machine is 2c4g, which uses 2 core CPU and 4GB memory
+
+## Result and analysis
 
 1. 100K write commands
-   
+
     ```
     ./redisgraph-benchmark-go -n 100000 -graph-key graph -query "CREATE (u:User)"
     ```
     ![Alt text](image.png)
 
-2. running mixed read and writes benchmark in a single graph
+2. 100K read commands
+
+    ```
+    ./redisgraph-benchmark-go -n 100000 -graph-key graph2 -query-ro "MATCH (n) return COUNT(n)" -a wikiredis
+    ```
+    ![Alt text](image-2.png)
+3. running mixed read and writes benchmark in a single graph
     ```
     ./redisgraph-benchmark-go -n 100000 \
     -graph-key graph \
@@ -103,20 +115,22 @@ in phase1, we implemented `The Interactive workload`
     -a wikiredis \
     ```
     ![Alt text](image-1.png)
-3. running mixed read and writes benchmark in two graphs
+4. running mixed read and writes benchmark in two graphs we provide a Python script file to excute two command concurrently, just copy the `muti_graph.py` file to the directory which you install the `redis-benchmark-go` tools, then run the file, it will ouput the results into sepreate files, here we give the results of read and write of two graph keys
+    ```
+    python muti_graph.py
+    ```
+    #### The write commands into two graph keys, each with 50000 seperately
+    #### 1.
+    ![Alt text](image-4.png)
+    #### 2.
+    ![Alt text](image-5.png)
+    #### The read commands into two graph keys, each with 50000 seperately
+    #### 1.
+    ![Alt text](image-6.png)
+    #### 2.
+    ![Alt text](image-7.png)
 
-    ```
-    ./redisgraph-benchmark-go -n 100000 \
-    -graph-key graph \
-    -query "CREATE (u:User)" \
-    -a wikiredis \
-    -query-ratio 0.5 \
-    -graph-key graph2 \
-    -query "CREATE (u:User)" \
-    -query-ratio 0.5
-    ```
-    ![Alt text](image-2.png)
-4. running mixed read and writes benchmark from a remote server
+5. running mixed read and writes benchmark from a remote server
 
     ```
     ./redisgraph-benchmark-go -n 100000 \
@@ -130,3 +144,16 @@ in phase1, we implemented `The Interactive workload`
     -h 43.154.150.30
     ```
     ![Alt text](image-3.png)
+
+### Some findings (guessing based on our evaluation, may not be correct 100%)
+In our evaluation, we find that:
+1. The read, write operation take almost the same time, which is different to the tradtional relational databases that write operation usually take more time than read operation
+2. Read, write operation to the same graph key with total request number of 100000 consume time almost equal to read/write operation to the same graph key with 100000 requests, combined with the first findings, we guess that request number is more important than read/write operation when comes to latency.
+3. In a remote machine to conduct same test, the latency grows almost 75%, most of which is caused by network reason, the actual excuate time is almost the same to that in the local machine.
+4. When sperate the operation equally to two graph key, although the internal excuation time reduce, the total client latency double, we infer that when concurrently operate two graph key, it may take longer time to process the results from internal excuation then return then to the clients.
+
+### Some possible way to improve
+1. Reduce network latency as well as possible
+2. Since redis store data in memory, increase memory as large as possible to support larger storage and faster process
+3. Current Redisgraph doesn't support distributed deployment due to the graph feature constraint, however, based on our finding 4, if we can extend the redisgraph to distributed deployment, and one node to handle single graph write/read, it may improve the performance when the data grows.
+4. Another way to improve the performance is that RPC memory call which already purposed by Microsoft. It allows node in distributed system to access remote memory as that locally, it not only reduce the network latency could exist in distributed system, but also allow the api client to process one graph key as all data is stored in which but not restricted by memory size.
